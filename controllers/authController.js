@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs'); // Updated to bcryptjs
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -11,6 +11,7 @@ async function register(req, res) {
       return res.status(400).send('User already exists');
     }
 
+    // Use bcryptjs to hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
@@ -30,6 +31,7 @@ async function login(req, res) {
       return res.status(400).send('Invalid credentials');
     }
 
+    // Use bcryptjs to compare the password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).send('Invalid credentials');
